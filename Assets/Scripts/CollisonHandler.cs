@@ -12,16 +12,22 @@ public class CollisonHandler : MonoBehaviour
                 Debug.Log("Everything is looking good!");
                 break;
             case "Finish":
-                LoadNexScene();
+                LoadNextScene();
                 break;
             default:
                     ReloadLevel();
                     break;
         }
-        void LoadNexScene()
+        void LoadNextScene()
         {
             int curretnSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadScene(curretnSceneIndex + 1);
+            int nextSceneIndex = curretnSceneIndex + 1;
+
+            if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
+            {
+                nextSceneIndex = 0;
+            }
+            SceneManager.LoadScene(nextSceneIndex);
             
         }
         void ReloadLevel()
