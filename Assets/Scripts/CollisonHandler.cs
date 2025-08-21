@@ -15,25 +15,36 @@ public class CollisonHandler : MonoBehaviour
                 LoadNextScene();
                 break;
             default:
-                    ReloadLevel();
-                    break;
+                StartCrashSequence();
+                break;
         }
-        void LoadNextScene()
-        {
-            int curretnSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            int nextSceneIndex = curretnSceneIndex + 1;
+    }
 
-            if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
-            {
-                nextSceneIndex = 0;
-            }
-            SceneManager.LoadScene(nextSceneIndex);
-            
-        }
-        void ReloadLevel()
+
+
+    void LoadNextScene()
+    {
+        int curretnSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = curretnSceneIndex + 1;
+
+        if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
         {
-            int curretnSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadScene(curretnSceneIndex);
+            nextSceneIndex = 0;
         }
+
+        SceneManager.LoadScene(nextSceneIndex);
+
+    }
+
+    void ReloadLevel()
+    {
+        int curretnSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(curretnSceneIndex);
+    }
+
+    void StartCrashSequence()
+    {
+        GetComponent<Movement>().enabled = false;
+        Invoke("ReloadLevel", 2f);
     }
 }
