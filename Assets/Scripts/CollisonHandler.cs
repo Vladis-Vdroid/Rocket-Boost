@@ -4,15 +4,30 @@ using UnityEngine.SceneManagement;
 
 public class CollisonHandler : MonoBehaviour
 {
+    [SerializeField] private float levelLoadDelay = 2f;
+    [SerializeField] private AudioClip crashSFX;
+    [SerializeField] private AudioClip successSFX;
+    
+    private AudioSource _audioSource;
+    
+    bool isControllable = true;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+    
+    
     private void OnCollisionEnter(Collision other)
     {
+        if (!isControllable) return;
         switch (other.gameObject.tag)
         {
             case "Friendly":
                 Debug.Log("Everything is looking good!");
                 break;
             case "Finish":
-                LoadNextScene();
+                StartSuccessSequence();
                 break;
             default:
                 StartCrashSequence();
@@ -20,6 +35,15 @@ public class CollisonHandler : MonoBehaviour
         }
     }
 
+    private void StartSuccessSequence()
+    {
+        
+        isControllable = false;
+        _audioSource.Stop();
+        _audioSource.PlayOneShot(successSFX);
+        GetComponent<Movement>().enabled = false;
+        Invoke("LoadNextScene", levelLoadDelay);
+    }
 
 
     void LoadNextScene()
@@ -33,7 +57,6 @@ public class CollisonHandler : MonoBehaviour
         }
 
         SceneManager.LoadScene(nextSceneIndex);
-
     }
 
     void ReloadLevel()
@@ -44,7 +67,11 @@ public class CollisonHandler : MonoBehaviour
 
     void StartCrashSequence()
     {
+        
+        isControllable = false;
+        _audioSource.Stop();
+        _audioSource.PlayOneShot(crashSFX);
         GetComponent<Movement>().enabled = false;
-        Invoke("ReloadLevel", 2f);
+        Invoke("ReloadLevel", levelLoadDelay);
     }
 }
