@@ -7,6 +7,8 @@ public class CollisonHandler : MonoBehaviour
     [SerializeField] private float levelLoadDelay = 2f;
     [SerializeField] private AudioClip crashSFX;
     [SerializeField] private AudioClip successSFX;
+    [SerializeField] private ParticleSystem successParticles;
+    [SerializeField] private ParticleSystem crashParticles;
     
     private AudioSource _audioSource;
     
@@ -43,8 +45,18 @@ public class CollisonHandler : MonoBehaviour
         _audioSource.PlayOneShot(successSFX);
         GetComponent<Movement>().enabled = false;
         Invoke("LoadNextScene", levelLoadDelay);
+        successParticles.Play();
     }
-
+    void StartCrashSequence()
+    {
+        
+        isControllable = false;
+        _audioSource.Stop();
+        _audioSource.PlayOneShot(crashSFX);
+        GetComponent<Movement>().enabled = false;
+        Invoke("ReloadLevel", levelLoadDelay);
+        crashParticles.Play();
+    }
 
     void LoadNextScene()
     {
@@ -63,15 +75,5 @@ public class CollisonHandler : MonoBehaviour
     {
         int curretnSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(curretnSceneIndex);
-    }
-
-    void StartCrashSequence()
-    {
-        
-        isControllable = false;
-        _audioSource.Stop();
-        _audioSource.PlayOneShot(crashSFX);
-        GetComponent<Movement>().enabled = false;
-        Invoke("ReloadLevel", levelLoadDelay);
     }
 }
